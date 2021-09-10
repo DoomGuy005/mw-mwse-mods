@@ -50,7 +50,9 @@ local function moveAway(ref)
 	local wanderingTimer = timer.start(
 		{
 			duration = 3,
-			callback = wander(ref, 0, 0)
+			callback = function ()
+				wander(ref, 0, 0)
+			end
 		}
 	)
 end
