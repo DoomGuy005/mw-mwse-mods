@@ -1,3 +1,4 @@
+--swap positions with npcs.
 local function swapPcs(ref)
 	-- gets player current cell
 	local current_cell = tes3.getPlayerCell()
@@ -26,12 +27,35 @@ local function swapPcs(ref)
 		  teleportCompanions = false
 		}
 	)
+	return
 end
 
---local function moveAway(ref)
---	local npc = ref
---end
+-- moves the NPC using AIWander given a range.
+local function wander(ref, ran, dur)
+	tes3.setAIWander(
+		{
+			reference = ref,
+			idles = { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+			range = ran,
+			duration = dur,
+			reset = true
+		}
+	)
+	return
+end
 
+-- makes npcs move around and stop after 3 seconds.
+local function moveAway(ref)
+	wander(ref, 100, 1)
+	local wanderingTimer = timer.start(
+		{
+			duration = 3,
+			callback = wander(ref, 0, 0)
+		}
+	)
+end
+
+-- returns true if ref is a passive npc, false otherwise.
 local function isRefValid(ref)
 	if (ref ~= nil and ref.object.objectType == tes3.objectType.npc) then
 		if not (ref.object.mobile.inCombat) then
@@ -41,19 +65,23 @@ local function isRefValid(ref)
 	return false
 end
 
+-- checks if player is looking at an npc
+-- and executes the proper use cases.
 local function checkTarget(e)
 	local target_ref = tes3.getPlayerTarget()
 	if (e.isShiftDown and isRefValid(target_ref)) then
 		swapPcs(target_ref)
 	end
-	--if (e.isAltDown and isRefValid(target_ref)) then
-	--	moveAway(target_ref)
-	--end
+	if (e.isControlDown and isRefValid(target_ref)) then
+		moveAway(target_ref)
+	end
+	return
 end
 
 local function init()
 	event.register("keyDown", checkTarget, { filter = tes3.scanCode.q } )
 	mwse.log("[Jay's Place Swap] Initialized!")
+	return
 end
 
 event.register('initialized', init)
