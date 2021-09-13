@@ -1,7 +1,7 @@
-local mcm = require("bigJayB.PlaceSwap.mcm")
-local conf = require("bigJayB.PlaceSwap.mer_save").config
+require("bigJayB.PlaceSwap.mcm")
+local config = require("bigJayB.PlaceSwap.config")
 
---swap positions with npcs.
+-- swap positions with npcs.
 local function swapPcs(ref)
 	-- gets player current cell
 	local current_cell = tes3.getPlayerCell()
@@ -84,7 +84,7 @@ local function checkTarget(e)
 end
 
 local function init()
-	event.register("keyDown", checkTarget, { filter = conf.key } )
+	event.register("keyDown", checkTarget, { filter = config.key.keyCode } )
 	mwse.log("[Jay's Place Swap & Move Away] Initialized!")
 	return
 end

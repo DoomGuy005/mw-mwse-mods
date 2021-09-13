@@ -1,27 +1,26 @@
-local conf = require("bigJayB.PlaceSwap.mer_save").config
+local config = require("bigJayB.PlaceSwap.config")
+
 local function createMCM()
     local template = mwse.mcm.createTemplate("Jay's Place Swap & Move Away")
-    template.onClose = function ()
-        conf.save()
-    end
+    template:saveOnClose("placeSwap", config)
 
     local page = template:createPage()
-    page:createKeyBinder{
+    page:createKeyBinder {
         label = "Assign key to use with the mod",
         allowCombinations = false,
-        variable = mwse.mcm.createTableVariable{
+        variable = mwse.mcm.createTableVariable {
             id = "key",
-            table = conf,
+            table = config,
             defaultSetting = {
                 keyCode = tes3.scanCode.q,
                 isShiftDown = false,
                 isAltDown = false,
                 isControlDown = false,
             },
-            restartRequired = false
+            restartRequired = true
         }
     }
-    mwse.mcm.register(template)
+    template:register()
 end
 
 event.register("modConfigReady", createMCM)
